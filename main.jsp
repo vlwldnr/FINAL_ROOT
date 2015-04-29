@@ -36,7 +36,7 @@
 		   	String cmd = "sh /var/lib/tomcat7/webapps/ROOT/button.sh";
 		   	Process p = r.exec(cmd);
 		   	p.waitFor();
-		   	p.destroy
+		   	p.destroy();
 	  	} catch (Exception e){
 	  		out.println(e.toString());
 	  	}
