@@ -1,5 +1,8 @@
 <%@page import="java.io.*"%>
-<% String button = request.getParameter("button"); %>
+<% String button = request.getParameter("button"); 
+   if(button == null){
+     button = "none";
+   }%>
 
 <html>
  	<head><title>First JSP</title></head>
@@ -17,15 +20,15 @@
 		%>
 		<hr>
 		<hr>
-	  	
-		<input type=submit value="Erase Log" onclick="eraseLog()"/>
+	        <button onclick="location.href='main.jsp?button=erase'";> Erase Log </button>	
+		<!-- <input type=submit value="Erase Log" onclick="eraseLog()"/>
 	  
 	  	<script language="JavaScript">
 	  	function eraseLog(){
 	  		document.forms["myForm"].action = "main.jsp?button=erase"
 	  	}
 		</script>
-	
+	        !-->
 		<a href="<%= request.getRequestURI() %>"><h3>Try Again</h3></a>
 		<br><br> 
 	  
@@ -33,14 +36,18 @@
 	  	try{
 			Runtime r = Runtime.getRuntime();
 		   	String msg = "", emsg = "";
-		   	String cmd = "sh /var/lib/tomcat7/webapps/ROOT/button.sh";
+		   	String cmd = "/var/lib/tomcat7/webapps/ROOT/button.sh";
 		   	Process p = r.exec(cmd);
 		   	p.waitFor();
 		   	p.destroy();
+			out.println("-" + button + "-");
 	  	} catch (Exception e){
 	  		out.println(e.toString());
 	  	}
-	   
+                }else { out.println("HI [" + button + " ]");}
+
+	        %>
+  		 
 		<% 
 		BufferedReader input = new BufferedReader (new FileReader ("/home/pi/libcoap-4.1.1/examples/output.txt"));
 		String line = "";
