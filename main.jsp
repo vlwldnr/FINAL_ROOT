@@ -8,35 +8,16 @@
  	<head><title>First JSP</title></head>
 	<body bgcolor="#4863A0">
 		<%! int count = 1; %>
-		<% double num = Math.random();
-		   if (num > 0.95) {  %>
-		      <h2>You'll have a luck day!</h2><p>(<%= num %>)</p>
-		<%
-		    } else {
-		%>
-		      <h2>Well, life goes on ... </h2><p>(<%= num %>)</p>
-		<%
-		    }
-		%>
 		<hr>
 		<hr>
 	        <button onclick="location.href='main.jsp?button=erase'";> Erase Log </button>	
-		<!-- <input type=submit value="Erase Log" onclick="eraseLog()"/>
-	  
-	  	<script language="JavaScript">
-	  	function eraseLog(){
-	  		document.forms["myForm"].action = "main.jsp?button=erase"
-	  	}
-		</script>
-	        !-->
-		<a href="<%= request.getRequestURI() %>"><h3>Try Again</h3></a>
 		<br><br> 
 	  
 	  	<% if(button.equals("erase")) {
 	  	try{
 			Runtime r = Runtime.getRuntime();
 		   	String msg = "", emsg = "";
-		   	String cmd = "/var/lib/tomcat7/webapps/ROOT/button.sh";
+		   	String cmd = "sh /var/lib/tomcat7/webapps/ROOT/button.sh";
 		   	Process p = r.exec(cmd);
 		   	p.waitFor();
 		   	p.destroy();
@@ -44,7 +25,34 @@
 	  	} catch (Exception e){
 	  		out.println(e.toString());
 	  	}
-                }else { out.println("HI [" + button + " ]");}
+                }else if(button.equals("on")){
+                try{
+			Runtime r = Runtime.getRuntime();
+		   	String msg = "", emsg = "";
+		   	String cmd = "sh /var/lib/tomcat7/webapps/ROOT/led_on.sh";
+		   	Process p = r.exec(cmd);
+		   	p.waitFor();
+		   	p.destroy();
+			out.println("-" + button + "-");
+	  	} catch (Exception e){
+	  		out.println(e.toString());
+	  	}
+           
+                }else if(button.equals("off")){
+           	try{
+			Runtime r = Runtime.getRuntime();
+		   	String msg = "", emsg = "";
+		   	String cmd = "sh /var/lib/tomcat7/webapps/ROOT/led_off.sh";
+		   	Process p = r.exec(cmd);
+		   	p.waitFor();
+		   	p.destroy();
+			out.println("-" + button + "-");
+	  	} catch (Exception e){
+	  		out.println(e.toString());
+	  	}     
+                
+                
+                }else{ out.println("HI [" + button + " ]");}
 
 	        %>
   		 
