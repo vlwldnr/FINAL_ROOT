@@ -21,10 +21,7 @@
 		<a href="<%= request.getRequestURI() %>"><h3>Try Again</h3></a>
 		<hr>
 		<hr>
-		<form method="POST" action="main.jsp">
-  			<input type="hidden" name="button" value="erase"/>
-			<input type="submit" name="submit" value="Erase Log" />
-		</form>	
+	        <!--<button onclick="location.href='main.jsp?button=erase'";> Erase Log </button> --!>	
 		<br><br> 
 	  
 	  	<% if(button.equals("erase")) {
@@ -58,8 +55,8 @@
 		String line = "";
 		%>
 	
-	  	<div style="overflow-y: auto; width:41%; height:70%; position:absolute;background-color:white;">
-	  	<div style="overflow-y: auto; padding:10px; margin: 5px;">
+	  	<div style="overflow-y: auto; width:41%; height:70%; position:absolute;background-color:#4963A0;">
+	  	<div style="overflow-y: auto; padding:10px; margin: 5px;background-color:#ffffff;">
 			<table border="1" style="width: 100%">
 			<tr align=center>
 				<td width="50px">Num</td>
@@ -74,7 +71,11 @@
 	        	<% } %>
 	    		</table>
 	  	</div>
-	  	</div>
+		<form method="POST" action="main.jsp">
+  			<input type="hidden" name="button" value="erase"/>
+			<input type="submit" name="submit" value="Erase Log" />
+		</form>	
+		</div>
 	  	<% 
 			out.flush();
 			input.close();
