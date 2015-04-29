@@ -18,27 +18,32 @@
 		<%
 		    }
 		%>
-		<hr>
-		<hr>
-	        <button onclick="location.href='main.jsp?button=erase'";> Erase Log </button>	
-		<!-- <input type=submit value="Erase Log" onclick="eraseLog()"/>
-	  
-	  	<script language="JavaScript">
-	  	function eraseLog(){
-	  		document.forms["myForm"].action = "main.jsp?button=erase"
-	  	}
-		</script>
-	        !-->
 		<a href="<%= request.getRequestURI() %>"><h3>Try Again</h3></a>
+		<hr>
+		<hr>
+		<form method="POST" action="main.jsp">
+  			<input type="hidden" name="button" value="erase"/>
+			<input type="submit" name="submit" value="Erase Log" />
+		</form>	
 		<br><br> 
 	  
 	  	<% if(button.equals("erase")) {
 	  	try{
 			Runtime r = Runtime.getRuntime();
 		   	String msg = "", emsg = "";
-		   	String cmd = "/var/lib/tomcat7/webapps/ROOT/button.sh";
+		   	String cmd = "/var/lib/tomcat7/webapps/ROOT/erase_log.sh";
 		   	Process p = r.exec(cmd);
 		   	p.waitFor();
+			BufferedReader inOut = new BufferedReader(new InputStreamReader(p.getInputStream()));
+ 			BufferedReader inErr = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+			while((msg = inOut.readLine()) != null)
+			{
+				out.println("Out = " + msg);
+			}
+			while ((emsg = inErr.readLine()) != null)
+			{
+				out.println("Error = "+ emsg);
+			}
 		   	p.destroy();
 			out.println("-" + button + "-");
 	  	} catch (Exception e){
