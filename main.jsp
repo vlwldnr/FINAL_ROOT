@@ -12,26 +12,19 @@
 </style>
 
 <html>
- 	<head><title>First JSP</title></head>
+ 	<head>
+		<title>Main DoIT Page</title>
+		<link rel="stylesheet" type="text/css" href="main.css">
+	</head>
 	<body bgcolor="#4863A0">
 		<%int i;
 		  int count = 1;%>
-			
-		<% double num = Math.random();
-		   if (num > 0.95) {  %>
-		      <h2>You'll have a luck day!</h2><p>(<%= num %>)</p>
-		<%
-		    } else {
-		%>
-		      <h2>Well, life goes on ... </h2><p>(<%= num %>)</p>
-		<%
-		    }
-		%>
-		<a href="<%= request.getRequestURI() %>"><h3>Try Again</h3></a>
-		<hr>
-		<hr>
+		<img src="http://s3.postimg.org/gfthfiwsz/Do_IT.png" height="150" width="320" id="logo"> 
+		<p id="header">
+			Door To IoT
+		</p>
+		<hr class="type1">
 	        <!--<button onclick="location.href='main.jsp?button=erase'";> Erase Log </button> --!>	
-		<br><br> 
 	  
 	  	<% if(button.equals("erase")) {
 	  	try{
@@ -65,10 +58,10 @@
 		String line = "";
 		%>
 		
-		<div style="overflow-y: auto; overflow-x: auto; width: 95% height:70%; background-color:#4963A0; overflow: hidden;">	
-	  	<div style="overflow-y: auto; width:41%; height:70%; background-color:#4963A0; float: left;">
-	  	<div style="overflow-y: auto; height:85%; padding:10px; margin: 5px;background-color:#ffffff;">
-			<table border="1" style="width: 100%">
+		<div id="outer">	
+	  	<div id="inner_left">
+	  	<div id="inner_log">
+			<table border="1" id="log_table">
 			<tr align=center>
 				<td width="50px">Num</td>
 				<td width="200px">LOG</td>
@@ -89,26 +82,29 @@
 		</form>	
 		</center>
 		</div>
-		<div style="overflow-y:auto; width:50%; height: 70%;margin-left: 45%">
-		<center>
+
+		<div id="inner_right">
 		<br>
 		<%if(button.equals("on")){%> 
-			<img src="http://s30.postimg.org/5dj8kefst/image.jpg"> 
+			<img src="http://s30.postimg.org/5dj8kefst/image.jpg" id="light"> 
  		<%} else{ %> 
- 			<img src="http://s21.postimg.org/d2fc9mpfn/offff.jpg"> 
+ 			<img src="http://s21.postimg.org/d2fc9mpfn/offff.jpg" id="light"> 
  		<%}%> 
+		<button id="enable" onclick="location.href='main.jsp?button=enable'"> ENABLE </button>
+		<button id="disable" onclick="location.href='main.jsp?button=disable'"> DISABLE </button>
 		<br><br>
- 		<form method="POST" action="main.jsp"> 
+ 		<form class="light_button" method="POST" action="main.jsp"> 
    			<input type="hidden" name="button" value="on"/> 
- 			<input type="submit" name="submit" value="LIGHT ON" /> 
+ 			<input id="light_on" type="submit" name="submit" value="LIGHT ON" /> 
  		</form> 
- 		<form method="POST" action="main.jsp"> 
+ 		<form class="light_button" method="POST" action="main.jsp"> 
    			<input type="hidden" name="button" value="off"/> 
- 			<input type="submit" name="submit" value="LIGHT OFF" /> 
+ 			<input id="light_off" type="submit" name="submit" value="LIGHT OFF" /> 
  		</form>
-		<br><br>
-		<hr>
-		<br><br>
+		<br><br><br><br><br>
+		<center>
+		<hr class="type2">
+		<br>
 		<form method="POST" action="main.jsp"> 
  		&nbsp;	Type your Email address below :  
  			<input type="hidden" name="email" value="email"> 
