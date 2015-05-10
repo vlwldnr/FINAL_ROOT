@@ -47,7 +47,7 @@ button#enable{
 	width: 100;
 	height: 100;
 	float: right;
-	margin-right: 10%;
+	margin-right: 5%;
 }
 
 button#disable{
@@ -56,7 +56,7 @@ button#disable{
 	height: 100;
 	float: right;
 	clear: right;
-	margin-right: 10%;
+	margin-right: 5%;
 }
 
 p#header{
@@ -66,6 +66,7 @@ p#header{
 	margin-right: 10;
 	margin-top: 5;	
 	font-family:Impact, Charcoal, sans-serif; 
+	display: inline;
 }
 input#light_on{
 	margin-left: 37%;
@@ -81,8 +82,10 @@ form.light_button{
 }
 
 img#logo{
-	margin-left: 42%;
+	text-align: center;	
+	margin-left: 7%;
 }
+
 
 hr.type1{
 	border: 0;

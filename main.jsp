@@ -4,12 +4,6 @@
      button = "none";
    }%>
 
-<style type="text/css">
-	input
- 	{
-		text-align: right;
-	}
-</style>
 
 <html>
  	<head>
@@ -19,10 +13,12 @@
 	<body bgcolor="#4863A0">
 		<%int i;
 		  int count = 1;%>
+		<center>
 		<img src="http://s3.postimg.org/gfthfiwsz/Do_IT.png" height="150" width="320" id="logo"> 
 		<p id="header">
 			Door To IoT
 		</p>
+		</center>
 		<hr class="type1">
 	        <!--<button onclick="location.href='main.jsp?button=erase'";> Erase Log </button> --!>	
 	  
