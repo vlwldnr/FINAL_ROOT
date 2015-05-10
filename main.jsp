@@ -1,18 +1,26 @@
 <%@page import="java.io.*"%>
-<% String sensor = request.getParameter("sensor");%>
-<% String button = request.getParameter("button"); 
-   	if(button == null){
-     		button = "none";
-   	}
-   	if(sensor == null){
-		sensor = "disable";
-   	}		
+<%! String sensor; 
+    String prev_state;
+    int sensor_counter = 0;
 %>
 
+<br>
+<% prev_state = request.getParameter("sensor");
+   if(prev_state == null && sensor == null){ 
+	sensor = "disable";
+   }else if(prev_state != null){  
+	sensor = prev_state;
+   }
+
+   String button = request.getParameter("button"); 
+   if(button == null){
+   	button = "none";
+   }
+%>
 
 <html>
  	<head>
-		<title>Main DoIT Page</title>
+		<title>Door To IoT... DoIT..!</title>
 		<link rel="stylesheet" type="text/css" href="main.css">
 	</head>
 	<body bgcolor="#4863A0">
@@ -25,8 +33,6 @@
 		</p>
 		</center>
 		<hr class="type1">
-	        <!--<button onclick="location.href='main.jsp?button=erase'";> Erase Log </button> --!>	
-	  
 	  	<% if(button.equals("erase")) {
 	  	try{
 			count = 1;
@@ -150,8 +156,43 @@
 		</div>
 	  	</div>
 		<% 
-			out.flush();
-			input.close();
+		    	if(sensor.equals("disable")){
+				if(sensor_counter > 0){
+					sensor_counter = 0;
+				}
+				sensor_counter--;
+			}else{
+				if(sensor_counter < 0){
+					sensor_counter = 0;
+				}
+				sensor_counter++;
+			}
+			if(sensor.equals("enable") && sensor_counter == 1){
+	  			try{
+					Runtime r2 = Runtime.getRuntime();
+		   			String cmd2 = "/var/lib/tomcat7/webapps/ROOT/get_enable.sh";
+		   			Process p2 = r2.exec(cmd2);
+		  	 		p2.waitFor();
+		   			p2.destroy();
+				} catch (Exception e){
+	  				out.println(e.toString());
+				}
+				out.println("STARTING get command\n"); 
+			}
+		    	if(sensor.equals("disable") && sensor_counter == -1){
+	  			try{
+					Runtime r3 = Runtime.getRuntime();
+		   			String cmd3 = "/var/lib/tomcat7/webapps/ROOT/get_disable.sh";
+		   			Process p3 = r3.exec(cmd3);
+		  	 		p3.waitFor();
+		   			p3.destroy();
+				} catch (Exception e){
+	  				out.println(e.toString());
+				}
+				out.println("STOPPING get command\n"); 
+			}
+		    	out.flush();
+		    	input.close();
 	  	%>
 		
   	</body>
