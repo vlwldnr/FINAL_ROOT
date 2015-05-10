@@ -1,8 +1,13 @@
 <%@page import="java.io.*"%>
+<% String sensor = request.getParameter("sensor");%>
 <% String button = request.getParameter("button"); 
-   if(button == null){
-     button = "none";
-   }%>
+   	if(button == null){
+     		button = "none";
+   	}
+   	if(sensor == null){
+		sensor = "disable";
+   	}		
+%>
 
 
 <html>
@@ -45,7 +50,9 @@
 	  	} catch (Exception e){
 	  		out.println(e.toString());
 	  	}
-                }else { out.println("HI [" + button + " ]");}
+                }else { out.println("HI [" + button + " ], [" + sensor + "]");
+		
+		}
 
 	        %>
   		 
@@ -86,8 +93,14 @@
  		<%} else{ %> 
  			<img src="http://s21.postimg.org/d2fc9mpfn/offff.jpg" id="light"> 
  		<%}%> 
-		<button id="enable" onclick="location.href='main.jsp?button=enable'"> ENABLE </button>
-		<button id="disable" onclick="location.href='main.jsp?button=disable'"> DISABLE </button>
+ 		<form class="sensor_button" method="POST" action="main.jsp"> 
+   			<input type="hidden" name="sensor" value="enable"/> 
+ 			<input id="enable" type="submit" name="submit" value="ENABLE" /> 
+ 		</form> 
+ 		<form class="sensor_button" method="POST" action="main.jsp"> 
+   			<input type="hidden" name="sensor" value="disable"/> 
+ 			<input id="disable" type="submit" name="submit" value="DISABLE" /> 
+ 		</form> 
 		<br><br>
  		<form class="light_button" method="POST" action="main.jsp"> 
    			<input type="hidden" name="button" value="on"/> 

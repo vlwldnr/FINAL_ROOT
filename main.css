@@ -42,20 +42,26 @@ div#inner_right{
 	
 }
 
-button#enable{
+form.sensor_button{
+	display: inline; 
+}
+
+input#enable{
 	background-color:lightgreen;
 	width: 100;
 	height: 100;
 	float: right;
+	text-align: center;
 	margin-right: 5%;
 }
 
-button#disable{
+input#disable{
 	background-color:#fe2e2e;
 	width: 100;
 	height: 100;
 	float: right;
 	clear: right;
+	text-align: center;
 	margin-right: 5%;
 }
 
