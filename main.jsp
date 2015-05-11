@@ -1,8 +1,21 @@
 <%@page import="java.io.*"%>
 <%! String sensor; 
     String prev_state;
+    int start_hour = 0;
+    int start_min = 0;
+    int end_hour = 0;
+    int end_min = 0;
     int sensor_counter = 0;
+    int last_entry = 0;
+    int prev_entry = 0;
+    int log_hour;
+    int log_min;
+    char[] log_hour_buf = new char[3];
+    char[] log_min_buf = new char[3];
+    String temp_buf;
+
 %>
+
 
 <br>
 <% prev_state = request.getParameter("sensor");
@@ -16,12 +29,20 @@
    if(button == null){
    	button = "none";
    }
+
+   String temp_start_hour = request.getParameter("start_hour");
+   String temp_start_min = request.getParameter("start_min");
+   String temp_end_hour = request.getParameter("end_hour");
+   String temp_end_min = request.getParameter("end_min");
+	
+
 %>
 
 <html>
  	<head>
 		<title>Door To IoT... DoIT..!</title>
 		<link rel="stylesheet" type="text/css" href="main.css">
+		<META HTTP-EQUIV="refresh" CONTENT="19">
 	</head>
 	<body bgcolor="#4863A0">
 		<%int i;
@@ -36,6 +57,7 @@
 	  	<% if(button.equals("erase")) {
 	  	try{
 			count = 1;
+			prev_entry = 0;
 			Runtime r = Runtime.getRuntime();
 		   	String msg = "", emsg = "";
 		   	String cmd = "/var/lib/tomcat7/webapps/ROOT/erase_log.sh";
@@ -79,11 +101,15 @@
 			<%while((line = input.readLine()) != null) {%>
 			<tr align=center>
 				<td><%out.println(count++);%> </td>
-				<td><%out.println(line);%> </td>   
+				<td><%out.println(line);%> </td>  
+				<%
+					temp_buf = line;
+				%>
 			</tr>
 	        	<% } %>
 	    		</table>
 	  	</div>
+	
 		<center>
 		<form method="POST" action="main.jsp">
   			<input type="hidden" name="button" value="erase"/>
@@ -94,6 +120,7 @@
 
 		<div id="inner_right">
 		<br>
+		<center>
 		<%if(button.equals("on")){%> 
 			<img src="http://s30.postimg.org/5dj8kefst/image.jpg" id="light"> 
  		<%} else{ %> 
@@ -116,12 +143,13 @@
    			<input type="hidden" name="button" value="off"/> 
  			<input id="light_off" type="submit" name="submit" value="LIGHT OFF" /> 
  		</form>
+		</center>
 		<br><br><br><br><br>
 		<center>
 		<hr class="type2">
 		<br>
 		<form method="POST" action="main.jsp"> 
- 		&nbsp;	Type your Email address below :  
+ 		&nbsp;	Type your E-mail address:  
  			<input type="hidden" name="email" value="email"> 
  			<input type="email" name="email" > 
  			<input type="submit" name="submit" value="Save"> 
@@ -152,6 +180,51 @@
 				<%}%>  
 			</select>
 			<input type="submit" value="SET"> 
+
+			<% 
+			
+			if(temp_start_hour != null && temp_start_min != null && temp_end_hour != null && temp_end_min != null){
+				start_hour = Integer.parseInt(temp_start_hour); 
+				start_min = Integer.parseInt(temp_start_min); 
+				end_hour = Integer.parseInt(temp_end_hour); 
+				end_min = Integer.parseInt(temp_end_min);
+ 			}
+
+			/* TIME ZONE SETTINGS  */
+
+			last_entry = count - 1;
+			if(last_entry > prev_entry){
+				prev_entry = last_entry;
+				out.println("last entry " + temp_buf + "\n");
+				temp_buf.getChars(11, 13, log_hour_buf, 0); 	
+				temp_buf.getChars(14, 16, log_min_buf, 0);
+				log_hour = Integer.parseInt((String.valueOf(log_hour_buf)).trim());
+				log_min = Integer.parseInt((String.valueOf(log_min_buf)).trim());
+
+				/* COMPARE WITH TIME ZONE SETTING */
+				if(start_hour != 0 && start_min != 0 && end_hour != 0 && end_min != 0){
+					if(log_hour > start_hour){	
+						if(log_hour < end_hour)
+							out.println("ALARM!");
+						else if(log_hour == end_hour && log_min <= end_min)
+							out.println("ALARM!");			
+					}else if(log_hour == start_hour){
+						if(log_min >= start_min){
+							if(log_hour < end_hour)
+								out.println("ALARM!");
+							if(log_hour == end_hour && log_min <= end_min)
+									out.println("ALARM!");
+						}
+					}	
+				}
+			}
+			out.println("temp_buf: " + temp_buf + "    ");
+			out.println("log_hour: " + String.valueOf(log_hour_buf) + "    ");
+			out.println("log_min: " + String.valueOf(log_min_buf) + "    ");
+			out.println("last_entry: " + last_entry  + "     "); 
+			out.println("prev_entry: " + prev_entry + "\n"); 
+			
+			%>
 		</center>		
 		</div>
 	  	</div>

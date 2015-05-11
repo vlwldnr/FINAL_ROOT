@@ -75,12 +75,15 @@ p#header{
 	display: inline;
 }
 input#light_on{
-	margin-left: 37%;
+	margin-right: 3%;
 }
 
+input#light_off{
+	margin-right: 3%;
+}
 img#light{
-	margin-left: 40%;
-
+	margin-right: 3%;
+	
 }
 
 form.light_button{
