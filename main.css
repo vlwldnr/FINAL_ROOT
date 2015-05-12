@@ -112,3 +112,10 @@ hr.type2{
 	background-repeat: repeat-x;
 }
 
+p#en_dis{
+	padding-right: 2%;
+	text-align: right;
+	font-size: 110%;
+	font-weight: bold;
+}
+

@@ -119,17 +119,32 @@
 		</div>
 
 		<div id="inner_right">
-		<br>
+		<p id="en_dis">
+		<% if(sensor.equals("enable")){ %>
+		Enable <input class="onoff_en" type="checkbox" disabled="disabled" checked="checked">	
+		&nbsp&nbsp
+		&nbsp&nbsp
+		Disable <input class="onoff_dis" type="checkbox" disabled="disabled">
+		<% }else{ %>
+		Enable <input class="onoff_en" type="checkbox" disabled="disabled">	
+		&nbsp&nbsp
+		&nbsp&nbsp
+		Disable <input class="onoff_dis" type="checkbox" disabled="disabled" checked="checked">
+		<% } %>	
+
+		</p>
 		<center>
+	
 		<%if(button.equals("on")){%> 
 			<img src="http://s30.postimg.org/5dj8kefst/image.jpg" id="light"> 
  		<%} else{ %> 
  			<img src="http://s21.postimg.org/d2fc9mpfn/offff.jpg" id="light"> 
- 		<%}%> 
+ 		<%}%>
  		<form class="sensor_button" method="POST" action="main.jsp"> 
    			<input type="hidden" name="sensor" value="enable"/> 
  			<input id="enable" type="submit" name="submit" value="ENABLE" /> 
  		</form> 
+		
  		<form class="sensor_button" method="POST" action="main.jsp"> 
    			<input type="hidden" name="sensor" value="disable"/> 
  			<input id="disable" type="submit" name="submit" value="DISABLE" /> 
