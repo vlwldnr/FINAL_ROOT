@@ -77,12 +77,8 @@
 			out.println("-" + button + "-");
 	  	} catch (Exception e){
 	  		out.println(e.toString());
-	  	}
-                }else { out.println("HI [" + button + " ], [" + sensor + "]");
-		
-		}
-
-	        %>
+	  	  }
+                }%>
   		 
 		<% 
 		BufferedReader input = new BufferedReader (new FileReader ("/home/pi/libcoap-4.1.1/examples/output.txt"));
@@ -210,7 +206,7 @@
 			last_entry = count - 1;
 			if(last_entry > prev_entry){
 				prev_entry = last_entry;
-				out.println("last entry " + temp_buf + "\n");
+				//out.println("last entry " + temp_buf + "\n");
 				temp_buf.getChars(11, 13, log_hour_buf, 0); 	
 				temp_buf.getChars(14, 16, log_min_buf, 0);
 				log_hour = Integer.parseInt((String.valueOf(log_hour_buf)).trim());
@@ -248,12 +244,13 @@
 				}
 				
 			}
+			/*
 			out.println("temp_buf: " + temp_buf + "    ");
 			out.println("log_hour: " + String.valueOf(log_hour_buf) + "    ");
 			out.println("log_min: " + String.valueOf(log_min_buf) + "    ");
 			out.println("last_entry: " + last_entry  + "     "); 
 			out.println("prev_entry: " + prev_entry + "\n"); 
-			
+			*/
 			%>
 		</center>		
 		</div>
@@ -294,7 +291,29 @@
 				}
 				out.println("STOPPING get command\n"); 
 			}
-		    	out.flush();
+			if(button.equals("on")){ 
+	  			try{
+					Runtime r4 = Runtime.getRuntime();
+		   			String cmd4 = "/var/lib/tomcat7/webapps/ROOT/light_on.sh";
+		   			Process p4 = r4.exec(cmd4);
+		  	 		p4.waitFor();
+		   			p4.destroy();
+				} catch (Exception e){
+	  				out.println(e.toString());
+				}
+			}
+			if(button.equals("off")){ 
+	  			try{
+					Runtime r5 = Runtime.getRuntime();
+		   			String cmd5 = "/var/lib/tomcat7/webapps/ROOT/light_off.sh";
+		   			Process p5 = r5.exec(cmd5);
+		  	 		p5.waitFor();
+		   			p5.destroy();
+				} catch (Exception e){
+	  				out.println(e.toString());
+				}
+			}
+			out.flush();
 		    	input.close();
 	  	%>
 		
