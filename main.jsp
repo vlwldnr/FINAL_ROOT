@@ -218,20 +218,35 @@
 
 				/* COMPARE WITH TIME ZONE SETTING */
 				if(start_hour != 0 && start_min != 0 && end_hour != 0 && end_min != 0){
-					if(log_hour > start_hour){	
-						if(log_hour < end_hour)
-							out.println("ALARM!");
-						else if(log_hour == end_hour && log_min <= end_min)
-							out.println("ALARM!");			
-					}else if(log_hour == start_hour){
-						if(log_min >= start_min){
+					if(start_hour <= end_hour){
+						if(log_hour > start_hour){	
 							if(log_hour < end_hour)
 								out.println("ALARM!");
-							if(log_hour == end_hour && log_min <= end_min)
+							else if(log_hour == end_hour && log_min <= end_min)
+								out.println("ALARM!");			
+						}else if(log_hour == start_hour){
+							if(log_min >= start_min){
+								if(log_hour < end_hour)
 									out.println("ALARM!");
+								if(log_hour == end_hour && log_min <= end_min)
+									out.println("ALARM!");
+							}
+						}	
+					}
+					else if(start_hour > end_hour){
+						if(log_hour > start_hour)
+							out.println("ALARM!");
+						else if(log_hour < end_hour){
+							out.println("ALARM");
+						}else if(log_hour == start_hour && log_min >= start_min){
+							out.println("ALARM");
+						}else if(log_hour == end_hour && log_min <= end_min){
+							out.println("ALARM");
 						}
-					}	
+
+					}
 				}
+				
 			}
 			out.println("temp_buf: " + temp_buf + "    ");
 			out.println("log_hour: " + String.valueOf(log_hour_buf) + "    ");
