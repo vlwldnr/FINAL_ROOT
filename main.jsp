@@ -307,7 +307,7 @@ public void sendMail()
 																								}
 																							}
 																						}
-																						<!--FOR DEBUGGING TIME -->
+																						//FOR DEBUGGING TIME
 																						/*out.println("temp_buf: " + temp_buf + "    ");
 																						out.println("log_hour: " + String.valueOf(log_hour_buf) + "    ");
 																						out.println("log_min: " + String.valueOf(log_min_buf) + "    ");
