@@ -1,5 +1,5 @@
 <%@page import="java.io.*"%>
-<%! String sensor; 
+<%! String sensor;
     String prev_state;
     int start_hour = 0;
     int start_min = 0;
@@ -13,19 +13,57 @@
     char[] log_hour_buf = new char[3];
     char[] log_min_buf = new char[3];
     String temp_buf;
-
+    String email;
 %>
 
+<%!
+public void sendMail()
+{
+	try{
+		String path = "/var/lib/tomcat7/webapps/ROOT/send_email.sh ";
+		String cmd_ = "sh " + path + temp_buf + " " + email ;
+		Process pp = Runtime.getRuntime().exec(cmd_);
+		System.out.println(cmd_);
+		pp.waitFor();
+		pp.destroy();
+	} catch (Exception e){
+		System.out.println(e.toString());
+	}
+}
+%>
 
-<br>
-<% prev_state = request.getParameter("sensor");
-   if(prev_state == null && sensor == null){ 
+<%!
+public void setFlag(boolean set)
+{
+	try{
+		String path = "/var/lib/tomcat7/webapps/ROOT/set_flag.sh ";
+		String cmd_;
+
+    // Set flag
+    if(set){
+      cmd_ = "sh 1";
+    } else {
+      cmd_ = "sh 0";
+    }
+
+		Process pp = Runtime.getRuntime().exec(cmd_);
+		pp.waitFor();
+		pp.destroy();
+	} catch (Exception e){
+		System.out.println(e.toString());
+	}
+}
+%>
+
+	<br>
+	<% prev_state = request.getParameter("sensor");
+   if(prev_state == null && sensor == null){
 	sensor = "disable";
-   }else if(prev_state != null){  
+   }else if(prev_state != null){
 	sensor = prev_state;
    }
 
-   String button = request.getParameter("button"); 
+   String button = request.getParameter("button");
    if(button == null){
    	button = "none";
    }
@@ -34,7 +72,10 @@
    String temp_start_min = request.getParameter("start_min");
    String temp_end_hour = request.getParameter("end_hour");
    String temp_end_min = request.getParameter("end_min");
-	
+   String email_t = request.getParameter("email");
+   if(email_t != null){
+	email = email_t;
+   }
 
 %>
 
@@ -48,9 +89,10 @@
 		<%int i;
 		  int count = 1;%>
 		<center>
-		<img src="http://s3.postimg.org/gfthfiwsz/Do_IT.png" height="150" width="320" id="logo"> 
+		<img src="http://s3.postimg.org/gfthfiwsz/Do_IT.png" height="150" width="320" id="logo">
 		<p id="header">
 			Door To IoT
+			<%=email%>
 		</p>
 		</center>
 		<hr class="type1">
@@ -79,13 +121,13 @@
 	  		out.println(e.toString());
 	  	  }
                 }%>
-  		 
-		<% 
+
+		<%
 		BufferedReader input = new BufferedReader (new FileReader ("/home/pi/libcoap-4.1.1/examples/output.txt"));
 		String line = "";
 		%>
-		
-		<div id="outer">	
+
+		<div id="outer">
 	  	<div id="inner_left">
 	  	<div id="inner_log">
 			<table border="1" id="log_table">
@@ -93,11 +135,11 @@
 				<td width="50px">Num</td>
 				<td width="200px">LOG</td>
 			</tr>
-		
+
 			<%while((line = input.readLine()) != null) {%>
 			<tr align=center>
 				<td><%out.println(count++);%> </td>
-				<td><%out.println(line);%> </td>  
+				<td><%out.println(line);%> </td>
 				<%
 					temp_buf = line;
 				%>
@@ -105,157 +147,187 @@
 	        	<% } %>
 	    		</table>
 	  	</div>
-	
+
 		<center>
 		<form method="POST" action="main.jsp">
   			<input type="hidden" name="button" value="erase"/>
 			<input type="submit" name="submit" value="Erase Log" align="center" />
-		</form>	
+		</form>
 		</center>
 		</div>
 
 		<div id="inner_right">
 		<p id="en_dis">
 		<% if(sensor.equals("enable")){ %>
-		Enable <input class="onoff_en" type="checkbox" disabled="disabled" checked="checked">	
+		Enable <input class="onoff_en" type="checkbox" disabled="disabled" checked="checked">
 		&nbsp&nbsp
 		&nbsp&nbsp
 		Disable <input class="onoff_dis" type="checkbox" disabled="disabled">
 		<% }else{ %>
-		Enable <input class="onoff_en" type="checkbox" disabled="disabled">	
+		Enable <input class="onoff_en" type="checkbox" disabled="disabled">
 		&nbsp&nbsp
 		&nbsp&nbsp
 		Disable <input class="onoff_dis" type="checkbox" disabled="disabled" checked="checked">
-		<% } %>	
+		<% } %>
 
 		</p>
 		<center>
-	
-		<%if(button.equals("on")){%> 
-			<img src="http://s30.postimg.org/5dj8kefst/image.jpg" id="light"> 
- 		<%} else{ %> 
- 			<img src="http://s21.postimg.org/d2fc9mpfn/offff.jpg" id="light"> 
+
+		<%if(button.equals("on")){%>
+			<img src="http://s30.postimg.org/5dj8kefst/image.jpg" id="light">
+ 		<%} else{ %>
+ 			<img src="http://s21.postimg.org/d2fc9mpfn/offff.jpg" id="light">
  		<%}%>
- 		<form class="sensor_button" method="POST" action="main.jsp"> 
-   			<input type="hidden" name="sensor" value="enable"/> 
- 			<input id="enable" type="submit" name="submit" value="ENABLE" /> 
- 		</form> 
-		
- 		<form class="sensor_button" method="POST" action="main.jsp"> 
-   			<input type="hidden" name="sensor" value="disable"/> 
- 			<input id="disable" type="submit" name="submit" value="DISABLE" /> 
- 		</form> 
+ 		<form class="sensor_button" method="POST" action="main.jsp">
+   			<input type="hidden" name="sensor" value="enable"/>
+ 			<input id="enable" type="submit" name="submit" value="ENABLE" />
+ 		</form>
+
+ 		<form class="sensor_button" method="POST" action="main.jsp">
+   			<input type="hidden" name="sensor" value="disable"/>
+ 			<input id="disable" type="submit" name="submit" value="DISABLE" />
+ 		</form>
 		<br><br>
- 		<form class="light_button" method="POST" action="main.jsp"> 
-   			<input type="hidden" name="button" value="on"/> 
- 			<input id="light_on" type="submit" name="submit" value="LIGHT ON" /> 
- 		</form> 
- 		<form class="light_button" method="POST" action="main.jsp"> 
-   			<input type="hidden" name="button" value="off"/> 
- 			<input id="light_off" type="submit" name="submit" value="LIGHT OFF" /> 
+ 		<form class="light_button" method="POST" action="main.jsp">
+   			<input type="hidden" name="button" value="on"/>
+ 			<input id="light_on" type="submit" name="submit" value="LIGHT ON" />
+ 		</form>
+ 		<form class="light_button" method="POST" action="main.jsp">
+   			<input type="hidden" name="button" value="off"/>
+ 			<input id="light_off" type="submit" name="submit" value="LIGHT OFF" />
  		</form>
 		</center>
 		<br><br><br><br><br>
 		<center>
 		<hr class="type2">
 		<br>
-		<form method="POST" action="main.jsp"> 
- 		&nbsp;	Type your E-mail address:  
- 			<input type="hidden" name="email" value="email"> 
- 			<input type="email" name="email" > 
- 			<input type="submit" name="submit" value="Save"> 
- 		<br><br><br> 
- 		<form method="POST" action="main.jsp"> 
- 			Please set your alarm time zone below : <br><br> 
+		<form method="POST" action="main.jsp">
+ 		&nbsp;	Type your E-mail address:
+ 			<input type="hidden" name="email_s" value="email_s">
+ 			<input type="email" name="email" >
+ 			<input type="submit" name="submit" value="Save">
+		</form>
+ 		<br><br><br>
+ 		<form method="POST" action="main.jsp">
+ 			Please set your alarm time zone below : <br><br>
 			<select name="start_hour">
 				<%for(i=1; i<25;i++){ %>
 					<option value="<%=i%>"><%=i%></option>
-				<%}%>  
+				<%}%>
 			</select>
- 			: 
+ 			:
 			<select name="start_min">
-				<%for(i=1; i<61;i++){ %>
+				<%for(i=0; i<61;i++){ %>
 					<option value="<%=i%>"><%=i%></option>
-				<%}%>  
+				<%}%>
 			</select>
- 			&nbsp ~ &nbsp 
+ 			&nbsp ~ &nbsp
 			<select name="end_hour">
 				<%for(i=1; i<25;i++){ %>
 					<option value="<%=i%>"><%=i%></option>
-				<%}%>  
+				<%}%>
 			</select>
 			:
 			<select name="end_min">
-				<%for(i=1; i<61;i++){ %>
+				<%for(i=0; i<61;i++){ %>
 					<option value="<%=i%>"><%=i%></option>
-				<%}%>  
+				<%}%>
 			</select>
-			<input type="submit" value="SET"> 
+			<input type="submit" value="SET">
 
-			<% 
-			
+			<%
+
 			if(temp_start_hour != null && temp_start_min != null && temp_end_hour != null && temp_end_min != null){
-				start_hour = Integer.parseInt(temp_start_hour); 
-				start_min = Integer.parseInt(temp_start_min); 
-				end_hour = Integer.parseInt(temp_end_hour); 
+				start_hour = Integer.parseInt(temp_start_hour);
+				start_min = Integer.parseInt(temp_start_min);
+				end_hour = Integer.parseInt(temp_end_hour);
 				end_min = Integer.parseInt(temp_end_min);
  			}
 
 			/* TIME ZONE SETTINGS  */
 
 			last_entry = count - 1;
+			out.println("last_entry: " + last_entry  + "     ");
+			out.println("prev_entry: " + prev_entry + "\n");
 			if(last_entry > prev_entry){
 				prev_entry = last_entry;
-				//out.println("last entry " + temp_buf + "\n");
-				temp_buf.getChars(11, 13, log_hour_buf, 0); 	
+				temp_buf.getChars(11, 13, log_hour_buf, 0);
 				temp_buf.getChars(14, 16, log_min_buf, 0);
 				log_hour = Integer.parseInt((String.valueOf(log_hour_buf)).trim());
 				log_min = Integer.parseInt((String.valueOf(log_min_buf)).trim());
 
 				/* COMPARE WITH TIME ZONE SETTING */
-				if(start_hour != 0 && start_min != 0 && end_hour != 0 && end_min != 0){
+				if(start_hour != 0 && end_hour != 0 && email != null){
 					if(start_hour <= end_hour){
-						if(log_hour > start_hour){	
-							if(log_hour < end_hour)
+						if(log_hour > start_hour){
+							if(log_hour < end_hour){
+								sendMail();
+                setFlag(true);
 								out.println("ALARM!");
-							else if(log_hour == end_hour && log_min <= end_min)
-								out.println("ALARM!");			
+							}
+							else if(log_hour == end_hour && log_min <= end_min){
+								sendMail();
+                setFlag(true);
+								out.println("ALARM!");
+							} else {
+                // Not in ALARM Condition, reset flag for further alarm op.
+                setFlag(false);
+              }
 						}else if(log_hour == start_hour){
 							if(log_min >= start_min){
-								if(log_hour < end_hour)
+								if(log_hour < end_hour){
+									sendMail();
+                  setFlag(true);
 									out.println("ALARM!");
-								if(log_hour == end_hour && log_min <= end_min)
+								}
+								else if(log_hour == end_hour && log_min <= end_min){
+									sendMail();
+                  setFlag(true);
 									out.println("ALARM!");
+								} else {
+                  // Not in ALARM Condition, reset flag for further alarm op.
+                  setFlag(false);
+                }
 							}
-						}	
+						}
 					}
 					else if(start_hour > end_hour){
-						if(log_hour > start_hour)
+						if(log_hour > start_hour){
+							sendMail();
+              setFlag(true);
 							out.println("ALARM!");
-						else if(log_hour < end_hour){
-							out.println("ALARM");
-						}else if(log_hour == start_hour && log_min >= start_min){
-							out.println("ALARM");
-						}else if(log_hour == end_hour && log_min <= end_min){
-							out.println("ALARM");
 						}
+						else if(log_hour < end_hour){
+							sendMail();
+              setFlag(true);
+							out.println("ALARM!");
+						}else if(log_hour == start_hour && log_min >= start_min){
+							sendMail();
+              setFlag(true);
+							out.println("ALARM!");
+						}else if(log_hour == end_hour && log_min <= end_min){
+							sendMail();
+              setFlag(true);
+							out.println("ALARM!");
+						} else {
+              // Not in ALARM Condition, reset flag for further alarm op.
+              setFlag(false);
+            }
 
 					}
 				}
-				
 			}
-			/*
+
 			out.println("temp_buf: " + temp_buf + "    ");
 			out.println("log_hour: " + String.valueOf(log_hour_buf) + "    ");
 			out.println("log_min: " + String.valueOf(log_min_buf) + "    ");
-			out.println("last_entry: " + last_entry  + "     "); 
-			out.println("prev_entry: " + prev_entry + "\n"); 
-			*/
+			out.println("start_hour : "+start_hour + "  ");
+			out.println("end_hour : " + end_hour + "  ");
 			%>
-		</center>		
+		</center>
 		</div>
 	  	</div>
-		<% 
+		<%
 		    	if(sensor.equals("disable")){
 				if(sensor_counter > 0){
 					sensor_counter = 0;
@@ -277,7 +349,7 @@
 				} catch (Exception e){
 	  				out.println(e.toString());
 				}
-				out.println("STARTING get command\n"); 
+				out.println("STARTING get command\n");
 			}
 		    	if(sensor.equals("disable") && sensor_counter == -1){
 	  			try{
@@ -289,9 +361,9 @@
 				} catch (Exception e){
 	  				out.println(e.toString());
 				}
-				out.println("STOPPING get command\n"); 
+				out.println("STOPPING get command\n");
 			}
-			if(button.equals("on")){ 
+			if(button.equals("on")){
 	  			try{
 					Runtime r4 = Runtime.getRuntime();
 		   			String cmd4 = "/var/lib/tomcat7/webapps/ROOT/light_on.sh";
@@ -302,7 +374,7 @@
 	  				out.println(e.toString());
 				}
 			}
-			if(button.equals("off")){ 
+			if(button.equals("off")){
 	  			try{
 					Runtime r5 = Runtime.getRuntime();
 		   			String cmd5 = "/var/lib/tomcat7/webapps/ROOT/light_off.sh";
@@ -316,6 +388,6 @@
 			out.flush();
 		    	input.close();
 	  	%>
-		
+
   	</body>
 </html>
