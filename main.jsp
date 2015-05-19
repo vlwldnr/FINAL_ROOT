@@ -79,10 +79,9 @@ public void sendMail()
 					if(contiguous_counter > 0){
 						contiguous_counter--;
 					}
-					out.println("contiguous_counter: " + contiguous_counter);
 					%>
 					<center>
-					<div id="header">
+					<div>
 						<img src="./Do_IT.png" height="150" width="320" id="logo">
 							<p id="header">
 								Door To IoT
@@ -107,20 +106,9 @@ public void sendMail()
 									String cmd = "/var/lib/tomcat7/webapps/ROOT/erase_log.sh";
 									Process p = r.exec(cmd);
 									p.waitFor();
-									BufferedReader inOut = new BufferedReader(new InputStreamReader(p.getInputStream()));
-									BufferedReader inErr = new BufferedReader(new InputStreamReader(p.getErrorStream()));
-									while((msg = inOut.readLine()) != null)
-									{
-										out.println("Out = " + msg);
-									}
-									while ((emsg = inErr.readLine()) != null)
-									{
-										out.println("Error = "+ emsg);
-									}
 									p.destroy();
-									out.println("-" + button + "-");
 								} catch (Exception e) {
-									out.println(e.toString());
+									//out.println(e.toString());
 								}
 						}
 						%>
@@ -214,13 +202,8 @@ public void sendMail()
 																	<input type="email" class="form-control" id="InputEmail" placeholder="jane.doe@example.com" name="email">
 																</div>
 																&nbsp<button type="submit" class="btn btn-default">Set E-mail </button>
-															<!--Type your E-mail address:
-													  			<input type="hidden" name="email_s" value="email_s">
-													  			<input type="email" name="email" >
-													  			<input type="submit" name="submit" value="Save">
-															-->
-																			</form>
-																			<br>
+															</form>
+																<br>
 																				<form method="POST" action="main.jsp">
 																					Please set your alarm time zone below : <br><br>
 																					<select name="start_hour">
@@ -259,35 +242,31 @@ public void sendMail()
 																						}
 
 																						/* TIME ZONE SETTINGS  */
-							                              last_entry = count - 1;
-																						out.println("last_entry: " + last_entry  + "     ");
-																						out.println("prev_entry: " + prev_entry + "\n");
+							                           								    last_entry = count - 1;
+																						//out.println("last_entry: " + last_entry  + "     ");
+																						//out.println("prev_entry: " + prev_entry + "\n");
 																						if(last_entry > prev_entry){
 																							prev_entry = last_entry;
 																							temp_buf.getChars(11, 13, log_hour_buf, 0);
 																							temp_buf.getChars(14, 16, log_min_buf, 0);
 																							log_hour = Integer.parseInt((String.valueOf(log_hour_buf)).trim());
 																							log_min = Integer.parseInt((String.valueOf(log_min_buf)).trim());
-																							out.println("inside");
-
+																						
 																							/* COMPARE WITH TIME ZONE SETTING */
 																							// Works with start hour, end hour, email.
 																							if(start_hour != -1 && end_hour != -1 && email != null && user != null && contiguous_counter == 0){
 																								// end_hour doesn't pass day
-																							out.println("inside2");
 																								if(start_hour <= end_hour){
 																									// log_hour is passed start_hour
 																									if(log_hour > start_hour){
 																										// log_hour is is in range
 																										if(log_hour < end_hour){
 																												sendMail();
-																												out.println("ALARM!");
 																												contiguous_counter = 10;
 																										}
 																										// Same hour
 																										else if(log_hour == end_hour && log_min <= end_min){
 																											sendMail();
-																											out.println("ALARM!");
 																											contiguous_counter = 10;
 																										} else {
 																											// Not in ALARM Condition, reset flag for further alarm op.
@@ -297,12 +276,10 @@ public void sendMail()
 																										if(log_min >= start_min){
 																											if(log_hour < end_hour){
 																													sendMail();
-																													out.println("ALARM!");
 																													contiguous_counter = 10;
 																											}
 																											else if(log_hour == end_hour && log_min <= end_min){
 																													sendMail();
-																													out.println("ALARM!");
 																													contiguous_counter = 10;
 																											} else {
 																												// Not in ALARM Condition, reset flag for further alarm op.
@@ -314,19 +291,15 @@ public void sendMail()
 																								else if(start_hour > end_hour){
 																									if(log_hour > start_hour){
 																											sendMail();
-																											out.println("ALARM!");
 																								    	contiguous_counter = 10;
 																									}	else if(log_hour < end_hour){
 																											sendMail();
-																											out.println("ALARM!");
 																											contiguous_counter = 10;
 																									} else if(log_hour == start_hour && log_min >= start_min){
 																											sendMail();
-																											out.println("ALARM!");
 																											contiguous_counter = 10;
 																									} else if(log_hour == end_hour && log_min <= end_min){
 																											sendMail();
-																											out.println("ALARM!");
 																											contiguous_counter = 10;
 																									} else {
 																										// Not in ALARM Condition, reset flag for further alarm op.
@@ -334,7 +307,7 @@ public void sendMail()
 																								}
 																							}
 																						}
-
+																						<!--FOR DEBUGGING TIME -->
 																						/*out.println("temp_buf: " + temp_buf + "    ");
 																						out.println("log_hour: " + String.valueOf(log_hour_buf) + "    ");
 																						out.println("log_min: " + String.valueOf(log_min_buf) + "    ");
