@@ -165,7 +165,7 @@ public void sendMail()
 										Disable <input class="onoff_dis" type="checkbox" disabled="disabled" checked="checked">
 										<% } %>
 
-									</p>
+								</p>
 									<center>
 
 										<%if(button.equals("on")){%>
@@ -204,7 +204,6 @@ public void sendMail()
 																<div class="form-group">
 																	<label for="InputEmail">E-mail</label>
 																	<input type="email" class="form-control" id="InputEmail" placeholder="jane.doe@example.com" name="email">
-
 																</div>
 																&nbsp<button type="submit" class="btn btn-default">Set E-mail </button>
 															<!--Type your E-mail address:
@@ -253,8 +252,7 @@ public void sendMail()
 																						}
 
 																						/* TIME ZONE SETTINGS  */
-
-																						last_entry = count - 1;
+							                              last_entry = count - 1;
 																						//out.println("last_entry: " + last_entry  + "     ");
 																						//out.println("prev_entry: " + prev_entry + "\n");
 																						if(last_entry > prev_entry){
@@ -415,6 +413,5 @@ public void sendMail()
 																			out.flush();
 																			input.close();
 																			%>
-
 																		</body>
 																	</html>
