@@ -91,11 +91,11 @@ append_to_output(const unsigned char *data, size_t len) {
   }
 
   if(*data == '0'){
-    printf("0\n");
+    system("/var/lib/tomcat7/webapps/ROOT/light_off.sh");
   } else if(*data == '1'){
     fwrite(time_buf, 1, 19, file);
     fputc('\n', file);
-    printf("1\n");
+    system("/var/lib/tomcat7/webapps/ROOT/light_on.sh");
     fflush(file);
   }
 
