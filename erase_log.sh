@@ -1,6 +1,6 @@
 #!/bin/sh
 
-> /home/pi/libcoap-4.1.1/examples/output.txt
+> /var/lib/tomcat7/webapps/ROOT/libcoap/output.txt
 echo "Logs Deleted"   
     
     

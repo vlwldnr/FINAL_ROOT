@@ -6,7 +6,7 @@
 
 Alarmed=$(cat Alarmed.txt)
 
-if [ $Alarmed = 1 ]
+if [ $Alarmed="1" ]
   then
   echo "$1 $2" | mail -a "From: DoIT_Admin <doit.hgu@gmail.com>" \
                    -a "Subject: ALARM ALERT" \
