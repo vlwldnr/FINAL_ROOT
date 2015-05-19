@@ -1,7 +1,7 @@
 #!/bin/sh
 
-rm /home/pi/libcoap-4.1.1/examples/output.txt
-touch /home/pi/libcoap-4.1.1/examples/output.txt
+rm /var/lib/tomcat7/webapps/ROOT/libcoap/output.txt
+touch /var/lib/tomcat7/webapps/ROOT/libcoap/output.txt
     
     
     

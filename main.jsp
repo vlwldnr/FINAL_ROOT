@@ -2,9 +2,9 @@
 <%!
 String sensor;
 String prev_state;
-int start_hour = 0;
+int start_hour = -1;
 int start_min = 0;
-int end_hour = 0;
+int end_hour = -1;
 int end_min = 0;
 int sensor_counter = 0;
 int last_entry = 0;
@@ -16,7 +16,7 @@ char[] log_min_buf = new char[3];
 String temp_buf;
 String email;
 String user;
-Boolean mail_flag = true;
+int contiguous_counter = 0;
 %>
 
 <%!
@@ -75,7 +75,12 @@ public void sendMail()
 				</head>
 				<body>
 					<%int i;
-					int count = 1;%>
+					int count = 1;
+					if(contiguous_counter > 0){
+						contiguous_counter--;
+					}
+					out.println("contiguous_counter: " + contiguous_counter);
+					%>
 					<center>
 					<div id="header">
 						<img src="http://s3.postimg.org/gfthfiwsz/Do_IT.png" height="150" width="320" id="logo">
@@ -85,7 +90,10 @@ public void sendMail()
 									<h2><p class="bg-success"> Welcome back <%=user%>!</p><h2>
 								<% } if(email != null) { %>
 									<h2><p class="bg-info"><small> Your current e-mail address is <%=email%>.</small></p></h2>
+								<% } if(start_hour != -1 && end_hour != -1) {%>
+									<h3><p class="bg-warning"><small> Your alarm is set from [<%=start_hour%>:<%=start_min%>] to [<%=end_hour%>:<%=end_min%>]</small></p></h3>							
 								<% } %>
+					
 							</p>
 						</center>
 						<hr class="type1">
@@ -118,7 +126,7 @@ public void sendMail()
 						%>
 
 						<%
-							BufferedReader input = new BufferedReader (new FileReader ("/home/pi/libcoap-4.1.1/examples/output.txt"));
+							BufferedReader input = new BufferedReader (new FileReader ("/var/lib/tomcat7/webapps/ROOT/libcoap/output.txt"));
 							String line = "";
 						%>
 						</div>
@@ -216,7 +224,7 @@ public void sendMail()
 																				<form method="POST" action="main.jsp">
 																					Please set your alarm time zone below : <br><br>
 																					<select name="start_hour">
-																						<%for(i=1; i<25;i++){ %>
+																						<%for(i=0; i<24;i++){ %>
 																						<option value="<%=i%>"><%=i%></option>
 																						<%}%>
 																					</select>
@@ -228,7 +236,7 @@ public void sendMail()
 																					</select>
 																					&nbsp ~ &nbsp
 																					<select name="end_hour">
-																						<%for(i=1; i<25;i++){ %>
+																						<%for(i=0; i<24;i++){ %>
 																						<option value="<%=i%>"><%=i%></option>
 																						<%}%>
 																					</select>
@@ -238,7 +246,6 @@ public void sendMail()
 																						<option value="<%=i%>"><%=i%></option>
 																						<%}%>
 																					</select>
-																					<input type="submit" value="SET">
 																					&nbsp&nbsp
 																					<input class="btn btn-info" type="submit" value="SET">
 
@@ -253,57 +260,52 @@ public void sendMail()
 
 																						/* TIME ZONE SETTINGS  */
 							                              last_entry = count - 1;
-																						//out.println("last_entry: " + last_entry  + "     ");
-																						//out.println("prev_entry: " + prev_entry + "\n");
+																						out.println("last_entry: " + last_entry  + "     ");
+																						out.println("prev_entry: " + prev_entry + "\n");
 																						if(last_entry > prev_entry){
 																							prev_entry = last_entry;
 																							temp_buf.getChars(11, 13, log_hour_buf, 0);
 																							temp_buf.getChars(14, 16, log_min_buf, 0);
 																							log_hour = Integer.parseInt((String.valueOf(log_hour_buf)).trim());
 																							log_min = Integer.parseInt((String.valueOf(log_min_buf)).trim());
+																							out.println("inside");
 
 																							/* COMPARE WITH TIME ZONE SETTING */
 																							// Works with start hour, end hour, email.
-																							if(start_hour != 0 && end_hour != 0 && email != null){
+																							if(start_hour != -1 && end_hour != -1 && email != null && user != null && contiguous_counter == 0){
 																								// end_hour doesn't pass day
+																							out.println("inside2");
 																								if(start_hour <= end_hour){
 																									// log_hour is passed start_hour
 																									if(log_hour > start_hour){
 																										// log_hour is is in range
 																										if(log_hour < end_hour){
-																											if(mail_flag){
 																												sendMail();
 																												out.println("ALARM!");
-																												mail_flag = false; // Detected and Mail triggered, sleep until this period end.
-																											}
+																												contiguous_counter = 10;
 																										}
 																										// Same hour
 																										else if(log_hour == end_hour && log_min <= end_min){
 																											sendMail();
 																											out.println("ALARM!");
+																											contiguous_counter = 10;
 																										} else {
 																											// Not in ALARM Condition, reset flag for further alarm op.
 																											// This condition should never happened
-																											mail_flag = true;
 																										}
 																									} else if(log_hour == start_hour) {
 																										if(log_min >= start_min){
 																											if(log_hour < end_hour){
-																												if(mail_flag){
 																													sendMail();
 																													out.println("ALARM!");
-																													mail_flag = false; // Detected and Mail triggered, sleep until this period end.
-																												}
+																													contiguous_counter = 10;
 																											}
 																											else if(log_hour == end_hour && log_min <= end_min){
-																												if(mail_flag){
 																													sendMail();
 																													out.println("ALARM!");
-																													mail_flag = false; // Detected and Mail triggered, sleep until this period end.
-																												}
+																													contiguous_counter = 10;
 																											} else {
 																												// Not in ALARM Condition, reset flag for further alarm op.
-																												mail_flag = true;
 																											}
 																										}
 																									}
@@ -311,32 +313,23 @@ public void sendMail()
 																								// Example: 18:00 to 02:00 next day
 																								else if(start_hour > end_hour){
 																									if(log_hour > start_hour){
-																										if(mail_flag){
 																											sendMail();
 																											out.println("ALARM!");
-																											mail_flag = false; // Detected and Mail triggered, sleep until this period end.
-																										}
+																								    	contiguous_counter = 10;
 																									}	else if(log_hour < end_hour){
-																										if(mail_flag){
 																											sendMail();
 																											out.println("ALARM!");
-																											mail_flag = false; // Detected and Mail triggered, sleep until this period end.
-																										}
+																											contiguous_counter = 10;
 																									} else if(log_hour == start_hour && log_min >= start_min){
-																										if(mail_flag){
 																											sendMail();
 																											out.println("ALARM!");
-																											mail_flag = false; // Detected and Mail triggered, sleep until this period end.
-																										}
+																											contiguous_counter = 10;
 																									} else if(log_hour == end_hour && log_min <= end_min){
-																										if(mail_flag){
 																											sendMail();
 																											out.println("ALARM!");
-																											mail_flag = false; // Detected and Mail triggered, sleep until this period end.
-																										}
+																											contiguous_counter = 10;
 																									} else {
 																										// Not in ALARM Condition, reset flag for further alarm op.
-																										mail_flag = true;
 																									}
 																								}
 																							}

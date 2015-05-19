@@ -79,8 +79,7 @@ append_to_output(const unsigned char *data, size_t len) {
 
   strftime(time_buf, 26, "%Y/%m/%d %H:%M:%S", tm_info);
 
-  // We gonna print it to STDOUT, so this if statement is useless. [Spiria]
-/*  if (!file) {
+  if (!file) {
     if (!output_file.s || (output_file.length && output_file.s[0] == '-'))
       file = stdout;
     else {
@@ -89,24 +88,16 @@ append_to_output(const unsigned char *data, size_t len) {
         return -1;
       }
     }
-  }*/
-
-  // Spiria's Code
-  if(*data == '1') {
-    // PIR Sensor detected something
-    strcat(time_buf, "\n"); // Add newline
-    printf("%s", time_buf); // Print it to stdout
   }
 
-  // smilejun0701's original Code
-/*  if(*data == '0'){
+  if(*data == '0'){
     printf("0\n");
   } else if(*data == '1'){
     fwrite(time_buf, 1, 19, file);
     fputc('\n', file);
     printf("1\n");
     fflush(file);
-  }*/
+  }
 
   /*
   do {
