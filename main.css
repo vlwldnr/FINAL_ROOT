@@ -1,11 +1,3 @@
-html{
-	background: url(bgi.png) no-repeat center center fixed; 
-        -webkit-background-size: cover;
-        -moz-background-size: cover;
-        -o-background-size: cover;
-        background-size: cover;
-}
-
 input{
 	text-align: left;
 }
@@ -15,9 +7,6 @@ table#log_table{
 	border= "1";
 }
 
-div#header{
-
-}
 div#outer{
  	overflow-y: auto;
 	overflow-x: auto;

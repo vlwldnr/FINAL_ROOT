@@ -83,7 +83,7 @@ public void sendMail()
 					%>
 					<center>
 					<div id="header">
-						<img src="http://s3.postimg.org/gfthfiwsz/Do_IT.png" height="150" width="320" id="logo">
+						<img src="./Do_IT.png" height="150" width="320" id="logo">
 							<p id="header">
 								Door To IoT
 								<% if(user != null) {%>
@@ -177,9 +177,9 @@ public void sendMail()
 									<center>
 
 										<%if(button.equals("on")){%>
-										<img src="http://s30.postimg.org/5dj8kefst/image.jpg" id="light" class="img-rounded">
+										<img src="./on.jpg" id="light" class="img-rounded">
 											<%} else{ %>
-											<img src="http://s21.postimg.org/d2fc9mpfn/offff.jpg" id="light" class="img-rounded">
+											<img src="./off.jpg" id="light" class="img-rounded">
 												<%}%>
 												<form class="sensor_button" method="POST" action="main.jsp">
 													<input type="hidden" name="sensor" value="enable"/>
