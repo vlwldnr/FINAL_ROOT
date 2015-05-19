@@ -15,6 +15,7 @@ char[] log_hour_buf = new char[3];
 char[] log_min_buf = new char[3];
 String temp_buf;
 String email;
+String user;
 Boolean mail_flag = true;
 %>
 
@@ -58,6 +59,10 @@ public void sendMail()
 	if(email_t != null){
 		email = email_t;
 	}
+	String user_t = request.getParameter("user");
+	if(user_t != null){
+		user = user_t;
+	}
 
 	%>
 
@@ -66,15 +71,21 @@ public void sendMail()
 			<title>Door To IoT... DoIT..!</title>
 			<link rel="stylesheet" type="text/css" href="main.css">
 				<META HTTP-EQUIV="refresh" CONTENT="19">
+				<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
 				</head>
-				<body bgcolor="#4863A0">
+				<body>
 					<%int i;
 					int count = 1;%>
 					<center>
+					<div id="header">
 						<img src="http://s3.postimg.org/gfthfiwsz/Do_IT.png" height="150" width="320" id="logo">
 							<p id="header">
 								Door To IoT
-								<%=email%>
+								<% if(user != null) {%>
+									<h2><p class="bg-success"> Welcome back <%=user%>!</p><h2>
+								<% } if(email != null) { %>
+									<h2><p class="bg-info"><small> Your current e-mail address is <%=email%>.</small></p></h2>
+								<% } %>
 							</p>
 						</center>
 						<hr class="type1">
@@ -103,18 +114,18 @@ public void sendMail()
 								} catch (Exception e) {
 									out.println(e.toString());
 								}
-							}
-							%>
+						}
+						%>
 
-							<%
+						<%
 							BufferedReader input = new BufferedReader (new FileReader ("/home/pi/libcoap-4.1.1/examples/output.txt"));
 							String line = "";
-							%>
-
+						%>
+						</div>
 							<div id="outer">
 								<div id="inner_left">
 									<div id="inner_log">
-										<table border="1" id="log_table">
+										<table class="table table-striped" border="1" id="log_table">
 											<tr align=center>
 												<td width="50px">Num</td>
 												<td width="200px">LOG</td>
@@ -135,7 +146,7 @@ public void sendMail()
 									<center>
 										<form method="POST" action="main.jsp">
 											<input type="hidden" name="button" value="erase"/>
-											<input type="submit" name="submit" value="Erase Log" align="center" />
+											<input class="btn btn-warning" type="submit" name="submit" value="Erase Log" align="center" />
 										</form>
 									</center>
 								</div>
@@ -158,40 +169,51 @@ public void sendMail()
 									<center>
 
 										<%if(button.equals("on")){%>
-										<img src="http://s30.postimg.org/5dj8kefst/image.jpg" id="light">
+										<img src="http://s30.postimg.org/5dj8kefst/image.jpg" id="light" class="img-rounded">
 											<%} else{ %>
-											<img src="http://s21.postimg.org/d2fc9mpfn/offff.jpg" id="light">
+											<img src="http://s21.postimg.org/d2fc9mpfn/offff.jpg" id="light" class="img-rounded">
 												<%}%>
 												<form class="sensor_button" method="POST" action="main.jsp">
 													<input type="hidden" name="sensor" value="enable"/>
-													<input id="enable" type="submit" name="submit" value="ENABLE" />
+													<input class="btn btn-default btn-lg btn-block" id="enable" type="submit" name="submit" value="ENABLE" />
 												</form>
 
 												<form class="sensor_button" method="POST" action="main.jsp">
 													<input type="hidden" name="sensor" value="disable"/>
-													<input id="disable" type="submit" name="submit" value="DISABLE" />
+													<input class="btn btn-default btn-lg btn-block" id="disable" type="submit" name="submit" value="DISABLE" />
 												</form>
 												<br><br>
 													<form class="light_button" method="POST" action="main.jsp">
 														<input type="hidden" name="button" value="on"/>
-														<input id="light_on" type="submit" name="submit" value="LIGHT ON" />
+														<input class="btn btn-default" id="light_on" type="submit" name="submit" value="LIGHT ON" />
 													</form>
 													<form class="light_button" method="POST" action="main.jsp">
 														<input type="hidden" name="button" value="off"/>
-														<input id="light_off" type="submit" name="submit" value="LIGHT OFF" />
+														<input class="btn btn-default" id="light_off" type="submit" name="submit" value="LIGHT OFF" />
 													</form>
 												</center>
-												<br><br><br><br><br>
+												<br><br><br>
 													<center>
 														<hr class="type2">
-															<br>
-																<form method="POST" action="main.jsp">
-																	&nbsp;	Type your E-mail address:
-																	<input type="hidden" name="email_s" value="email_s">
-																		<input type="email" name="email" >
-																			<input type="submit" name="submit" value="Save">
+															<form class="form-inline" method="POST" action="main.jsp">
+													 			<div class="form-group">
+																	<label for="InputUser"> Name </label>
+																	<input type="text" class="form-control" id="InputUser" placeholder="Jane Doe" name="user">
+																</div>
+																&nbsp&nbsp
+																<div class="form-group">
+																	<label for="InputEmail">E-mail</label>
+																	<input type="email" class="form-control" id="InputEmail" placeholder="jane.doe@example.com" name="email">
+
+																</div>
+																&nbsp<button type="submit" class="btn btn-default">Set E-mail </button>
+															<!--Type your E-mail address:
+													  			<input type="hidden" name="email_s" value="email_s">
+													  			<input type="email" name="email" >
+													  			<input type="submit" name="submit" value="Save">
+															-->
 																			</form>
-																			<br><br><br>
+																			<br>
 																				<form method="POST" action="main.jsp">
 																					Please set your alarm time zone below : <br><br>
 																					<select name="start_hour">
@@ -218,6 +240,8 @@ public void sendMail()
 																						<%}%>
 																					</select>
 																					<input type="submit" value="SET">
+																					&nbsp&nbsp
+																					<input class="btn btn-info" type="submit" value="SET">
 
 																						<%
 
@@ -231,8 +255,8 @@ public void sendMail()
 																						/* TIME ZONE SETTINGS  */
 
 																						last_entry = count - 1;
-																						out.println("last_entry: " + last_entry  + "     ");
-																						out.println("prev_entry: " + prev_entry + "\n");
+																						//out.println("last_entry: " + last_entry  + "     ");
+																						//out.println("prev_entry: " + prev_entry + "\n");
 																						if(last_entry > prev_entry){
 																							prev_entry = last_entry;
 																							temp_buf.getChars(11, 13, log_hour_buf, 0);
@@ -320,11 +344,11 @@ public void sendMail()
 																							}
 																						}
 
-																						out.println("temp_buf: " + temp_buf + "    ");
+																						/*out.println("temp_buf: " + temp_buf + "    ");
 																						out.println("log_hour: " + String.valueOf(log_hour_buf) + "    ");
 																						out.println("log_min: " + String.valueOf(log_min_buf) + "    ");
 																						out.println("start_hour : "+start_hour + "  ");
-																						out.println("end_hour : " + end_hour + "  ");
+																						out.println("end_hour : " + end_hour + "  ");*/
 																						%>
 																					</center>
 																				</div>
@@ -352,7 +376,7 @@ public void sendMail()
 																				} catch (Exception e){
 																					out.println(e.toString());
 																				}
-																				out.println("STARTING get command\n");
+																				//out.println("STARTING get command\n");
 																			}
 																			if(sensor.equals("disable") && sensor_counter == -1){
 																				try{
@@ -364,7 +388,7 @@ public void sendMail()
 																				} catch (Exception e){
 																					out.println(e.toString());
 																				}
-																				out.println("STOPPING get command\n");
+																				//out.println("STOPPING get command\n");
 																			}
 																			if(button.equals("on")){
 																				try{
