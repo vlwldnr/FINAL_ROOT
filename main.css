@@ -1,3 +1,11 @@
+html{
+	background: url(bgi.png) no-repeat center center fixed; 
+        -webkit-background-size: cover;
+        -moz-background-size: cover;
+        -o-background-size: cover;
+        background-size: cover;
+}
+
 input{
 	text-align: left;
 }
@@ -7,12 +15,14 @@ table#log_table{
 	border= "1";
 }
 
+div#header{
+
+}
 div#outer{
  	overflow-y: auto;
 	overflow-x: auto;
 	width: 100%;
 	height: 70%;
-	background-color: #4963A0; 
 	overflow: hidden; 
 }
 
@@ -20,7 +30,6 @@ div#inner_left{
 	overflow-y: auto;
 	width: 41%;
 	height: 100%;
-	background-color: #4963A0;
 	float: left;
 	margin-left: 3%;
 }
@@ -30,7 +39,6 @@ div#inner_log{
 	height: 85%;
 	padding: 10px;
 	margin: 5px;
-	background-color: #ffffff;
 }
 
 div#inner_right{
@@ -38,7 +46,6 @@ div#inner_right{
 	width: 50%;
 	height: 100%;
 	margin-left: 45%;
-	background-color: #4963A0;
 	
 }
 
@@ -68,8 +75,8 @@ input#disable{
 p#header{
 	float:right;
 	font-style: italic;
-	font-size: 200%;
-	margin-right: 20;
+	font-size: 250%;
+	margin-right: 3%;
 	margin-top: -5;	
 	font-family:Impact, Charcoal, sans-serif; 
 	display: inline;
@@ -92,7 +99,7 @@ form.light_button{
 
 img#logo{
 	text-align: center;	
-	margin-left: 7%;
+	margin-left: 10%;
 }
 
 

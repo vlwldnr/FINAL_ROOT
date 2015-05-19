@@ -1,19 +1,16 @@
+<!DOCTYPE html>
 <html>
+<head>
+<style>
+body {
+    background-image: url(http://s27.postimg.org/pc5zpki0z/type_6.png);
+
+</style>
+</head>
 <body>
-<%
 
-	@Singleton
-	public class SomeBackgroundJob {
+<h1>Hello World!!</h1>
 
-	    @PostConstruct
-	    @Schedule(hour="0", minute="0", second="3", persistent=false)
-	    public void run() {
-		printf("HI");
-	    }
-
-	}
-
-
-%>
 </body>
 </html>
+
