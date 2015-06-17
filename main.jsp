@@ -16,7 +16,9 @@ char[] log_min_buf = new char[3];
 String temp_buf;
 String email;
 String user;
+String temp;
 int contiguous_counter = 0;
+String serverIP;
 %>
 
 <%!
@@ -24,9 +26,11 @@ public void sendMail()
 {
 	try{
 		String path = "/var/lib/tomcat7/webapps/ROOT/send_email.sh ";
-		String cmd_ = "sh " + path + temp_buf + " " + email ;
+		String tmp_user = user.replace(" ", "_");
+		String cmd_ = "sh " + path + tmp_user + " " + temp_buf + " " + tmp_user + " " + email + " " + serverIP ;
 		Process pp = Runtime.getRuntime().exec(cmd_);
 		System.out.println(cmd_);
+		temp = cmd_;
 		pp.waitFor();
 		pp.destroy();
 	} catch (Exception e){
@@ -36,8 +40,10 @@ public void sendMail()
 %>
 
 <br>
+	
 
 	<%
+
 	prev_state = request.getParameter("sensor");
 
 	if(prev_state == null && sensor == null){
@@ -51,6 +57,7 @@ public void sendMail()
 		button = "none";
 	}
 
+	serverIP = request.getLocalAddr();
 	String temp_start_hour = request.getParameter("start_hour");
 	String temp_start_min = request.getParameter("start_min");
 	String temp_end_hour = request.getParameter("end_hour");
@@ -67,7 +74,7 @@ public void sendMail()
 	%>
 
 	<html>
-		<head>
+ 		<head>
 			<title>Door To IoT... DoIT..!</title>
 			<link rel="stylesheet" type="text/css" href="main.css">
 				<META HTTP-EQUIV="refresh" CONTENT="19">
@@ -245,13 +252,15 @@ public void sendMail()
 							                           								    last_entry = count - 1;
 																						//out.println("last_entry: " + last_entry  + "     ");
 																						//out.println("prev_entry: " + prev_entry + "\n");
+	
 																						if(last_entry > prev_entry){
 																							prev_entry = last_entry;
 																							temp_buf.getChars(11, 13, log_hour_buf, 0);
 																							temp_buf.getChars(14, 16, log_min_buf, 0);
 																							log_hour = Integer.parseInt((String.valueOf(log_hour_buf)).trim());
 																							log_min = Integer.parseInt((String.valueOf(log_min_buf)).trim());
-																						
+																							
+																							/* 10 ~ 22 */	
 																							/* COMPARE WITH TIME ZONE SETTING */
 																							// Works with start hour, end hour, email.
 																							if(start_hour != -1 && end_hour != -1 && email != null && user != null && contiguous_counter == 0){
@@ -263,6 +272,7 @@ public void sendMail()
 																										if(log_hour < end_hour){
 																												sendMail();
 																												contiguous_counter = 10;
+																												out.println("Mail Sent");
 																										}
 																										// Same hour
 																										else if(log_hour == end_hour && log_min <= end_min){
